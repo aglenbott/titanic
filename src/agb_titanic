@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 13 07:53:05 2018
+
+@author: agb
+"""
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+sns.set_style('white')
+plt.style.use('ggplot')
+
+
+
+#%% data importing
+
+train_df = pd.read_csv("../data/train.csv",header=0)
+test_df = pd.read_csv("../data/test.csv",header=0)
+
+#%%  simple survival split for male vs female
+
+print("\n")
+print("# survivors by sex:")
+print(pd.crosstab(train_df['Sex'],train_df['Survived'],margins=True))
+
+print("\n")
+print("Survival rate by sex:")
+print(pd.crosstab(train_df['Sex'],train_df['Survived'],normalize='index').xs(1,axis=1))
+
+m_surv_rate = pd.crosstab(train_df['Sex'],train_df['Survived'],normalize='index').xs(1,axis=1)['male']
+f_surv_rate = pd.crosstab(train_df['Sex'],train_df['Survived'],normalize='index').xs(1,axis=1)['female']
+
+print("\n")
+print("Difference in survival rates (women - men):")
+print('%.4f' % (f_surv_rate - m_surv_rate))
+
+
+#%% feature engineering - add title column
+
+title_dict = {'male':'Mr.','female':'Mrs.'}
+
+def gen_new_features(df):
+    titles = []
+    lastnames = []
+    for idx, row in df.iterrows():
+        # pull out the title first
+        title = None
+        for s in row['Name'].split()[:2]:
+            if "." in s:
+                title = s
+        if title == None:
+            try:
+                title = title_dict[row['Sex']]
+            except:
+                print("Unable to deduce title for:",row['Name'],row['Sex'])
+                title = np.nan
+        titles.append(title)
+
+        # then pull out the lastname
+        lastname = None
+        try:
+            lastname = row['Name'].split(",")[0]
+        except:
+            print("Unable to deduce lastname for:",row['Name'])
+            lastname = np.nan
+        lastnames.append(lastname)
+        
+    df['eTitle'] = titles
+    df['eLastname'] = lastnames
+
+gen_new_features(train_df)
+
+#%%
+
