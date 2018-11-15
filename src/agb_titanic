@@ -37,6 +37,32 @@ print("\n")
 print("Difference in survival rates (women - men):")
 print('%.4f' % (f_surv_rate - m_surv_rate))
 
+#%%  Hypothesis testing using Randomisation Simulation
+
+'''H<sub>0</sub>:  The variables `Sex` and `Survival` are independent.
+They have no relationship, and the observed difference between the proportion 
+of males and females who survived the sinking of the Titanic (55.31%) 
+was due to chance.
+
+H<sub>1</sub>: The variables `Sex` and `Survival` are not independent.
+The difference in survival rates of 55.31% was not due to chance,
+and sex does help predict survival.'''
+
+from sklearn.utils import shuffle
+
+hyp_df = train_df.copy()[['Sex','Survived']]
+
+def calc_surv_rate_diff(sex,survived):
+    df = pd.crosstab(sex,survived,normalize='index').xs(1,axis=1)
+    surv_diff = df['female'] - df['male']
+    return surv_diff
+
+diffs = []
+surv = np.array(hyp_df['Survived'])
+for i in range(0,10000):
+    sex = np.array(shuffle(hyp_df['Sex']))
+    new_surv_diff = calc_surv_rate_diff(sex,surv)
+    diffs.append(new_surv_diff)
 
 #%% feature engineering - add title column
 

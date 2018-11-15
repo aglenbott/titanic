@@ -18,4 +18,24 @@
 |             |                                     |             |                                                |                                                                                                                                                                                                 |
 
 ## Statistical question
-Does a passenger's Sex have an impact on their chance of survival?
+Does a passenger's `Sex` have an impact on their chance of `Survival`?
+
+## Hypotheses
+
+H<sub>0</sub>: Any difference between male passenger survival rate and
+ female passenger survival rate is caused by chance.
+
+H<sub>1</sub>: Any difference between male passenger survival rate and
+ female passenger survival rate is not caused by chance, but is 
+actually statistically significant.
+
+## Better hypothesis formulation
+
+H<sub>0</sub>:  The variables `Sex` and `Survival` are independent.
+They have no relationship, and the observed difference between the proportion 
+of males and females who survived the sinking of the Titanic (55.31%) 
+was due to chance.
+
+H<sub>1</sub>: The variables `Sex` and `Survival` are not independent.
+The difference in survival rates of 55.31% was not due to chance,
+and sex does help predict survival.
